@@ -1,0 +1,2 @@
+cd /appserv/unp/notify/ioconsumer/src
+node ioconsumer.js >/dev/null 2>&1 &
