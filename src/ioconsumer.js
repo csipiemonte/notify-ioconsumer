@@ -10,34 +10,6 @@ const utility = obj.utility();
 
 const req_promise = require("request-promise");
 
-
-var hostname = require('os').hostname();
-console.log("instrumentazione per appdynamics: ", process.env.APPDYNAMICS_HOSTS, hostname)
-logger.info("instrumentazione per appdynamics: ", process.env.APPDYNAMICS_HOSTS, hostname)
-
-var env_dynamics = {
-    "dev" : "DEV",
-    "tst" : "TEST",
-    "prod": "PROD"
-}
-
-if(process.env.APPDYNAMICS_HOSTS && process.env.APPDYNAMICS_HOSTS.indexOf(hostname) !== -1){
-    require("appdynamics").profile({
-        controllerHostName: 'csi-net.saas.appdynamics.com',
-        controllerPort: 443,
-        controllerSslEnabled: true,
-        accountName: 'csi-net',
-        accountAccessKey: 'accountAccessKey',
-        applicationName: 'NOTIFY_' + env_dynamics[process.env.ENVIRONMENT] + '_CSI-01',
-        tierName: 'notify-' + conf.app_name,
-        nodeName: 'notify-'+ conf.app_name + '-' + hostname,
-        proxyHost: conf.appdynamics.proxyHost,
-        proxyPort: conf.appdynamics.proxyPort
-    })
-
-}
-
-
 function checkIoItalia(payloadMessage) {
     var res = [];
 
