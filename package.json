@@ -2,9 +2,9 @@
   "name": "ioconsumer",
   "version": "1.0.0",
   "description": "",
-  "main": "ioconsumer.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node src/ioconsumer.js",
+    "start": "cd src && node ioconsumer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
