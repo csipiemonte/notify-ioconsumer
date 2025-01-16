@@ -1,7 +1,5 @@
 var commons = require("../../commons/src/commons");
-console.log(JSON.stringify(process.env, null, 4));
 const conf = commons.merge(require('./conf/ioconsumer'), require('./conf/ioconsumer-' + (process.env.ENVIRONMENT || 'localhost')));
-console.log(JSON.stringify(conf, null, 4));
 const obj = commons.obj(conf);
 
 const logger = obj.logger();
@@ -35,63 +33,81 @@ function checkIoItalia(payloadMessage) {
         if (!utility.checkNested(payloadMessage,"io.content.payment_data.notice_number") ||  !payloadMessage.io.content.payment_data.notice_number.match(/^[0123][0-9]{17}$/g) ) res.push("io content.payment_data.notice_number is not valid");
     }
 
-
     return res;
 }
 
-
 async function sendToIoItalia(body){
-    if(!body.user.preferences.io) throw {client_source: "ioconsumer", type: "client_error", description: "ioitalia token is not setted" };
-    var message = {};
-    message.id = body.payload.id;
-    message.bulk_id = body.payload.bulk_id;
-    message.user_id = body.payload.user_id;
-    message.tag = body.payload.tag;
-    message.correlation_id = body.payload.correlation_id;
-    await eh.info("trying to send to ioitalia",JSON.stringify({
+    
+    if(!body.user.preferences.io) throw {client_source: "ioconsumer", type: "client_error", description: "ioitalia token is not setted", message: "ioitalia token is not setted", level: "warn" };
+    
+    let message = {
+        id: body.payload.id,
+        bulk_id: body.payload.bulk_id,
+        user_id: body.payload.user_id,
+        tag: body.payload.tag,
+        correlation_id: body.payload.correlation_id,
+        tenant: body.user.tenant ? body.user.tenant : conf.defaulttenant
+    }
+    
+    eh.info("trying to send to ioitalia", JSON.stringify({
         message: message
     }));
     logger.debug("trying to send to ioitalia");
-    var optionsProfile = {
-        url: conf.ioitalia.api.url + "profiles/" + message.user_id,
-        method: 'GET',
-        headers: {
-            'Ocp-Apim-Subscription-Key': body.user.preferences.io
-        },
-        json:true
-    };
-    let optionsMessage = {
-        url: conf.ioitalia.api.url + "messages/" + message.user_id,
-        method: 'POST',
-        headers: {
-            'Ocp-Apim-Subscription-Key': body.user.preferences.io
-        },
-        body: body.payload.io,
-        json:true
-    };
-    try{
-        try{
-            let profile = await req_promise(optionsProfile);
-            if(!profile.sender_allowed || profile.sender_allowed === false) throw {type:"client_error", client_source:"ioconsumer",description:"sender not allowed", message: "error sender not allowed"};
-        }catch(err){
-            err.level = "debug";
-            //if(err.error && err.error.detail) err.description = err.error.detail;
-            err.type = "client_error";
-            throw err;
-        }
-        message.ioitalia = await req_promise(optionsMessage);
-        await eh.ok("ioitalia sent",JSON.stringify({
-            sender: body.user.preference_service_name,
-            message:message
-        }));
-        logger.info("ioitalia sent");
-    }catch(err){
+    
+    try {
+        let optionsProfile = {
+            url: conf.ioitalia.api.url + "profiles/" + body.payload.user_id,
+            method: 'GET',
+            headers: {
+                'Ocp-Apim-Subscription-Key': body.user.preferences.io
+            },
+            json:true
+        };
+        let profile = await req_promise(optionsProfile);
+        logger.trace(profile);
+        if(!profile.sender_allowed || profile.sender_allowed === false) throw {statusCode:200, type:"client_error", client_source:"ioconsumer", description:"sender not allowed", message: "error sender not allowed"};
+    } catch(err) {
+        
         if(err.error && err.error.detail) err.description = err.error.detail;
         err.client_source = "ioconsumer";
-        if(err.statusCode >= 400 && err.statusCode < 500) err.type ="client_error";
+        if(err.statusCode === 400 || err.statusCode === 404 || err.statusCode === 200) {
+            err.type = "client_error";
+            err.level = "debug";
+        } else {
+            err.type = "system_error";
+        }
+        throw err;
+    }
+
+    try {
+        let optionsMessage = {
+            url: conf.ioitalia.api.url + "messages/" + body.payload.user_id,
+            method: 'POST',
+            headers: {
+                'Ocp-Apim-Subscription-Key': body.user.preferences.io
+            },
+            body: body.payload.io,
+            json: true
+        };
+
+        message.ioitalia = await req_promise(optionsMessage);
+        eh.ok("ioitalia sent",JSON.stringify({
+            sender: body.user.preference_service_name,
+            message: message
+        }));
+        logger.info("ioitalia sent");
+
+    } catch(err) {
+        if(err.error && err.error.detail) err.description = err.error.detail;
+        err.client_source = "ioconsumer";
+        if(err.statusCode === 400)
+            err.type = "client_error";
+        else
+            err.type = "system_error";
         throw err;
     }
 }
-logger.debug(JSON.stringify(process.env, null, 4));
-logger.debug(JSON.stringify(conf, null, 4));
+
+logger.info("environment:", JSON.stringify(process.env, null, 4));
+logger.info("configuration:", JSON.stringify(conf, null, 4));
 obj.consumer("io", checkIoItalia, null, sendToIoItalia, true)();
