@@ -34,8 +34,10 @@ I principali attributi presenti nei file di configurazione sono elencati di segu
 * `mb`: contiene la configurazione per il Message Broker.
     * `queues`: contiene le informazioni per le code del message broker
         * `events`: url della coda su cui scrivere gli eventi
+        * `retry`: url della coda di retry delle notifiche che non è stato possibile inviare suhh app io
         * `messages`: url della coda su cui leggere i messaggi da inviare
     * `token`: il token auth per chiamare il message broker
+* `defaulttenant`: tenant di default
 * `log4js`: la configurazione di log4js (vedi https://www.npmjs.com/package/log4js)
 
 # Running
@@ -45,7 +47,7 @@ Avviare ioconsumer
 cd src && node ioconsumer.js
 ```
 
-or
+oppure
 
 ```
 npm start

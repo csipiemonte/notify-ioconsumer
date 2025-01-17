@@ -12,7 +12,7 @@ function checkIoItalia(payloadMessage) {
     var res = [];
 
     if (!payloadMessage) {
-        res.push("payload not present");
+        res.push("payload is empty");
         return res;
     }
     if (typeof payloadMessage !== 'object' || Array.isArray(payloadMessage)) {
