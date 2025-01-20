@@ -21,6 +21,6 @@
       "retry": "http://localhost:8080/api/v1/queues/messages:io:to_be_retried",
       "events": "http://localhost:8080/api/v1/topics/events"
     },
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMmM2YzllNWQtZjQwMS00NDljLTlmN2YtNDllYzQwZjM1ZmNhIiwicHJlZmVyZW5jZV9zZXJ2aWNlX25hbWUiOiJpb2NvbnN1bWVyIiwiZXhwIjoyNTM0MDIyMTA4MDAsImlhdCI6MTUxOTgyMjcwNCwiYXBwbGljYXRpb25zIjp7Im1iIjpbImVucXVldWUiLCJkZXF1ZXVlIl0sInByZWZlcmVuY2VzIjpbInJlYWQiLCJ3cml0ZSIsImFkbWluIl0sIm1leCI6WyJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfX0.meNUxgKCxZ7pwnMPL3sqK4P5Z-dY4RXMD9ZqxOS3pXM"
+    "token": "YF6E7N5muTBWYRkQaLjSIBgQFtCxKObkWnbW0xVd2EW1U9+pKiUi5zyM6lrrKpOFE9Ttc/RHw2OsUvWMGz2jnodU8A5IKnazj2OBfHqU8g8y0L71NUI9N5LCKpPzYyzgZRKwZkM3/3Y3DRrfq5kdyWGpRccW8A0IN5acSmCHEcWvi4DNc0Qg9HZ8zCmfXfCtm3oB4LG6y8LMTnrZX/oLArHQPs5b65KC30UPPX8jKjfrjacZEaE+saCOWMT+kQxDGmEeh5S2ZCyLUnW6SLlc+3q/Tr3X+uJjfAD1Rs2IM14jNBwWub8Wb7fuSpsg+2nT3b3cfPDcwh2QXzvSd2PopQ9QQk88LpxCb0bJvuzi+OblD4P7+U/VFJT3ZmCe8u1z0gTnO3ulPSLY3A9ytXNHd4NGTVxgFIUWVM26YppBgf17R2gi7K4+9r/abrPAJkXzE45+J3qEM6/3zc5DlqUM+BzkT+BY6GyLLdHgZNDADs1XP97JkOHt1AUTdLaZlE6Mos17wVAODiS2uw/Fu+d81Q=="
   }
 }
